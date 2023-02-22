@@ -33,10 +33,9 @@ typedef struct{
 3. Buscar hóspede;
 4. Verificar os quartos disponíveis;
 5. Tabela de valores dos quartos;
-6. Calcular arrecadação diária;
-7. Calcular arrecadação mensal;
-8. Calcular arrecadação anual;
-9. Emitir nota fiscal;
+6. Calcular arrecadação mensal;
+7. Calcular arrecadação anual;
+8. Recibo;
 */
 
 void inicia_quartos(HOTEL *q){
@@ -51,12 +50,12 @@ void quarto(HOSPEDE *h, HOTEL *y, int indice){
     while(1){
         scanf("%d", &h[indice].quarto);
         getchar();
-        if(y->quartos[(h[indice].quarto)-1]==0){
+        if((y->quartos[(h[indice].quarto)-1]==0) && (h[indice].quarto>=0 && h[indice].quarto<MAX_QUARTOS)){
             y->quartos[(h[indice].quarto)-1]=1;
             break;
         }
         else{
-            printf("Quarto ocupado\n");
+            printf("Quarto indisponivel\n");
             printf("Insira o quarto novamente:\n");
         }
     }
@@ -76,20 +75,6 @@ void pagamento(HOSPEDE *h, HOTEL *y, int indice){
             break;
         }
         printf("Insira uma resposta válida! Sim ou Não?\n");
-    }
-}
-
-
-int verifica_cpf(HOSPEDE *h){
-    printf("%s", h->CPF);
-    if(
-        ((h->CPF[0]*1 + h->CPF[1]*2 + h->CPF[2]*3 + h->CPF[4]*4 + h->CPF[5]*5 + h->CPF[6]*6 + h->CPF[8]*7 + h->CPF[9]*8 + h->CPF[10]*9)%11 == h->CPF[12]) &&
-        ((h->CPF[0]*9 + h->CPF[1]*8 + h->CPF[2]*7 + h->CPF[4]*6 + h->CPF[5]*5 + h->CPF[6]*4 + h->CPF[8]*3 + h->CPF[9]*2 + h->CPF[10]*1)%11 == h->CPF[13])
-        && h->CPF[3] == '.' && h->CPF[7] == '.' && h->CPF[11] == '-'){
-            return 1;
-        }
-    else{
-        return -1;
     }
 }
 
@@ -220,10 +205,9 @@ void Menu(){
     printf("3. Buscar hospede\n");
     printf("4. Verificar os quartos disponiveis\n");
     printf("5. Tabela de valores dos quartos\n");
-    printf("6. Calcular arrecadacao diaria\n");
-    printf("7. Calcular arrecadacao mensal\n");
-    printf("8. Calcular arrecadacao anual\n");
-    printf("9. Fim\n");
+    printf("6. Calcular arrecadacao mensal\n");
+    printf("7. Calcular arrecadacao anual\n");
+    printf("8. Fim\n");
     printf("----------------------------------------------\n");
     printf("Digite a opcao escolhida:\n");
 
@@ -288,8 +272,6 @@ int main(){
             case 7:
                 break;
             case 8:
-                break;
-            case 9:
                 printf("Obrigado por utilizar nosso sistema! Tchau tchau!\n");
                 break;
             default:
@@ -297,7 +279,7 @@ int main(){
                 break;
         }
 
-    }while(comando!=9);
+    }while(comando!=8);
 
 
 return 0;
