@@ -15,11 +15,13 @@ typedef struct{
     char hora_entrada[6]; // hh:mm
     char hora_saida[6]; // hh:mm
     char telefone[20]; // +55 (dd) 9xxxx-xxxx
-    double valor;
+    int valor;
     int bolean_status_pagamento; // == 0 (não pago);
     int quantidade_adultos;
     int quantidade_criancas;
-    double estadia;
+    int estadia;
+    int tipo_quarto;
+    int n_colchoes;
 } HOSPEDE;
 
 typedef struct{
@@ -50,7 +52,7 @@ void quarto(HOSPEDE *h, HOTEL *y, int indice){
     while(1){
         scanf("%d", &h[indice].quarto);
         getchar();
-        if((y->quartos[(h[indice].quarto)-1]==0) && (h[indice].quarto>=0 && h[indice].quarto<MAX_QUARTOS)){
+        if((y->quartos[(h[indice].quarto)-1]==0) && (h[indice].quarto>0 && h[indice].quarto<MAX_QUARTOS)){
             y->quartos[(h[indice].quarto)-1]=1;
             break;
         }
@@ -93,28 +95,71 @@ void Tabela_quarto2(){
 
 void tipo_do_quarto(HOSPEDE *h, int indice){
 
-    int tipo_quarto;
-    double tipo_quarto_valor, n_colchoes;
+   
+    int tipo_quarto_valor = 0;
 
-    scanf("%d", &tipo_quarto);
+    scanf("%d", &h[indice].tipo_quarto);
 
-    if(tipo_quarto == 1){
-        tipo_quarto_valor = 70.0;
+    if(h[indice].tipo_quarto == 1){
+        tipo_quarto_valor = 70;
     }
-    if(tipo_quarto == 2){
-        tipo_quarto_valor = 95.0;
+    if(h[indice].tipo_quarto == 2){
+        tipo_quarto_valor = 95;
     }
-    if(tipo_quarto == 3){
-        tipo_quarto_valor = 125.0;
+    if(h[indice].tipo_quarto == 3){
+        tipo_quarto_valor = 125;
     }
-    else{
-        tipo_quarto_valor = 145.0;
+    if(h[indice].tipo_quarto == 4){
+        tipo_quarto_valor = 145;
     }
 
     printf("Insira a quantidade de colchoes extras:\n");
-    scanf("%lf", &n_colchoes);
+    scanf("%d", &h[indice].n_colchoes);
 
-    h[indice].valor = (tipo_quarto_valor*h[indice].estadia)+(30*n_colchoes);
+    h[indice].valor = (tipo_quarto_valor*h[indice].estadia)+(30*h[indice].n_colchoes);
+    
+}
+
+void Checkout(HOSPEDE *h){
+    printf("--------------------CHECK-OUT-----------------------\n");
+    printf("Insira o nome do hospede:\n");
+    
+    char hospede_procurado_checkout[70];
+    int l, count=0;
+
+    fgets(hospede_procurado_checkout, 70, stdin);
+        for(l=0; l<MAX_QUARTOS; l++){
+            if(strcmp(hospede_procurado_checkout, h[l].Nome) == 0){
+                printf("---------------------------------------------------\n");
+                printf("Hospede encontrado com sucesso!\n");
+                printf("---------------DADOS-GERAIS------------------------\n");
+                printf("Nome: %s", h[l].Nome);
+                printf("CPF: %s\n", h[l].CPF);
+                printf("RG: %d\n", h[l].RG);
+                printf("Quarto: %d\n", h[l].quarto);
+                printf("Telefone: %s\n", h[l].telefone);
+                printf("------------------DADOS-DA-ESTADIA----------------\n");
+                printf("Quantidadade de colchoes (extras): %.0lf\n", h[l].n_colchoes);
+                printf("Diarias: %.0lf\n", h[l].estadia);
+                printf("Tipo do quarto: ");
+                if(h[l].tipo_quarto == 1){
+                    printf("Quarto com uma cama de solteiro\n");
+                }
+                if(h[l].tipo_quarto == 2){
+                    printf("Quarto com duas camas de solteiro\n");
+                }
+                if(h[l].tipo_quarto == 3){
+                    printf("Quarto com uma cama de casal\n");
+                }   
+                else{
+                    printf("Quarto com uma cama de casal e uma de solteiro\n");
+                }
+                count++;
+            }
+        }
+    if(count == 0){
+        printf("Nome do hospede invalido.\nTente novamente.\n");
+    }
     
 }
 
@@ -257,6 +302,7 @@ int main(){
                 indice = Check_in(hospede, &hot, indice);
                 break;
             case 2:
+                Checkout(hospede);
                 break;
             case 3:
                 Busca_hospede(hospede);
