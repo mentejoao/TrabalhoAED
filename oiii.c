@@ -15,10 +15,11 @@ typedef struct{
     char hora_entrada[6]; // hh:mm
     char hora_saida[6]; // hh:mm
     char telefone[20]; // +55 (dd) 9xxxx-xxxx
-    float valor;
+    double valor;
     int bolean_status_pagamento; // == 0 (não pago);
     int quantidade_adultos;
     int quantidade_criancas;
+    double estadia;
 } HOSPEDE;
 
 typedef struct{
@@ -92,36 +93,90 @@ int verifica_cpf(HOSPEDE *h){
     }
 }
 
-int Check_in(HOSPEDE *h, HOTEL *i, int indice){
+void Tabela_quarto2(){
+
+    printf("\n");
+    printf("TIPOS DE QUARTOS\n");
+    printf("1 - Quarto com uma cama de solteiro = 70,00\n");
+    printf("2 - Quarto com duas camas de solteiro = 95,00\n");
+    printf("3 - Quarto com uma cama de casal = 125,00\n");
+    printf("4 - Quarto com uma cama de casal e uma de solteiro = 145,00\n");
+    printf("5 - Colchao avulso = 30,00\n");
+    printf("\n");
+
+}
+
+void tipo_do_quarto(HOSPEDE *h, int indice){
+
+    int tipo_quarto;
+    double tipo_quarto_valor, n_colchoes;
+
+    scanf("%d", &tipo_quarto);
+
+    if(tipo_quarto == 1){
+        tipo_quarto_valor = 70.0;
+    }
+    if(tipo_quarto == 2){
+        tipo_quarto_valor = 95.0;
+    }
+    if(tipo_quarto == 3){
+        tipo_quarto_valor = 125.0;
+    }
+    else{
+        tipo_quarto_valor = 145.0;
+    }
+
+    printf("Insira a quantidade de colchoes extras:\n");
+    scanf("%lf", &n_colchoes);
+
+    h[indice].valor = (tipo_quarto_valor*h[indice].estadia)+(30*n_colchoes);
     
-    printf("--------------------CHECK-IN-----------------------\n");
-    printf("Insira o nome do hospede:\n");
-    fgets(h[indice].Nome, 70, stdin);
-    printf("Insira o CPF do hospede (ex: XXX.XXX.XXX-XX):\n");
-    fgets(h[indice].CPF, 14, stdin);
-    getchar();
-    printf("Insira o RG do hospede:\n");
-    scanf("%d", &h[indice].RG);
-    getchar();
-    printf("Insira o telefone do hospede (ex: +XX (XX) 9XXXX-XXXX):\n");
-    fgets(h[indice].telefone, 20, stdin);
-    printf("Insira a quantidade de adultos:\n");
-    scanf("%d", &h[indice].quantidade_adultos);
-    getchar();
-    printf("Insira a quantidade de criancas:\n");
-    scanf("%d", &h[indice].quantidade_criancas);
-    getchar();
-    printf("Insira a data de entrada (ex: XX/XX/XXXX):\n");
-    fgets(h[indice].data_entrada, 11, stdin);
-    getchar();
-    printf("Insira a hora de entrada (ex: XX:XX):\n");
-    fgets(h[indice].hora_entrada, 6, stdin);
-    getchar();
-    printf("Insira o numero do quarto:\n");
-    quarto(h, i, indice);
-    printf("Pagamento realizado na entrada? \n");
-    pagamento(h, i, indice);
-    indice++;
+}
+
+int Check_in(HOSPEDE *h, HOTEL *i, int indice){
+
+    if(indice == MAX_QUARTOS+1){
+        printf("Nao ha quartos disponíveis\n");
+    }
+    
+    else{
+
+        printf("--------------------CHECK-IN-----------------------\n");
+        printf("Insira o nome do hospede:\n");
+        fgets(h[indice].Nome, 70, stdin);
+        printf("Insira o CPF do hospede (ex: XXX.XXX.XXX-XX):\n");
+        fgets(h[indice].CPF, 15, stdin);
+        getchar();
+        printf("Insira o RG do hospede:\n");
+        scanf("%d", &h[indice].RG);
+        getchar();
+        printf("Insira o telefone do hospede (ex: +XX (XX) 9XXXX-XXXX):\n");
+        fgets(h[indice].telefone, 20, stdin);
+        printf("Insira a quantidade de adultos:\n");
+        scanf("%d", &h[indice].quantidade_adultos);
+        getchar();
+        printf("Insira a quantidade de criancas:\n");
+        scanf("%d", &h[indice].quantidade_criancas);
+        getchar();
+        printf("Insira a data de entrada (ex: XX/XX/XXXX):\n");
+        fgets(h[indice].data_entrada, 11, stdin);
+        getchar();
+        printf("Insira a hora de entrada (ex: XX:XX):\n");
+        fgets(h[indice].hora_entrada, 6, stdin);
+        getchar();
+        printf("Insira o tempo de estadia (diarias):\n");
+        scanf("%lf", &h[indice].estadia);
+        Tabela_quarto2();
+        printf("Insira o tipo do quarto:\n");
+        tipo_do_quarto(h, indice);
+        printf("Insira o numero do quarto:\n");
+        quarto(h, i, indice);
+        printf("Pagamento realizado na entrada? \n");
+        pagamento(h, i, indice);
+        indice++;
+        
+    }
+
     return(indice);
 }
 
@@ -138,14 +193,11 @@ void Busca_hospede(HOSPEDE *h){
             if(strcmp(hospede_procurado, h[i].Nome) == 0){
 
                 printf("-------------------------------------------\n");
-                printf("Nome: %s\n", h[i].Nome);
-                //puts(h[i].Nome);
+                printf("Nome: %s", h[i].Nome);
                 printf("CPF: %s\n", h[i].CPF);
-                //puts(h[i].CPF);
                 printf("RG: %d\n", h[i].RG);
                 printf("Quarto: %d\n", h[i].quarto);
                 printf("Telefone: %s\n", h[i].telefone);
-                //puts(h[i].telefone);
                 printf("-------------------------------------------");
                 count++;
 
