@@ -7,7 +7,7 @@
 
 typedef struct{
     char Nome[70];
-    char CPF[14];
+    char CPF[15];
     int RG;
     int quarto; // == 0(desocupado);
     char data_entrada[11]; // dd/mm/aa 
@@ -22,7 +22,6 @@ typedef struct{
 } HOSPEDE;
 
 typedef struct{
-    HOSPEDE quantidade[MAX_QUARTOS];
     int quartos[MAX_QUARTOS];
     char status_pagamento[4];
 } HOTEL;
@@ -47,12 +46,12 @@ void inicia_quartos(HOTEL *q){
 
 }
 
-void quarto(HOSPEDE *x, HOTEL *y){
+void quarto(HOSPEDE *h, HOTEL *y, int indice){
     while(1){
-        scanf("%d", &x->quarto);
+        scanf("%d", &h[indice].quarto);
         getchar();
-        if(y->quartos[(x->quarto)-1]==0){
-            y->quartos[(x->quarto)-1]=1;
+        if(y->quartos[(h[indice].quarto)-1]==0){
+            y->quartos[(h[indice].quarto)-1]=1;
             break;
         }
         else{
@@ -62,16 +61,17 @@ void quarto(HOSPEDE *x, HOTEL *y){
     }
 }
 
-void pagamento(HOSPEDE *x, HOTEL *y){
+void pagamento(HOSPEDE *h, HOTEL *y, int indice){
+
     while(1){
     fgets(y->status_pagamento, 4, stdin);
         
         if((y->status_pagamento[0] == 'S') || (y->status_pagamento[0] == 's')){
-            x->bolean_status_pagamento = 1;
+            h[indice].bolean_status_pagamento = 1;
             break;
         }
         else if((y->status_pagamento[0] == 'N') || (y->status_pagamento[0] == 'n')){
-            x->bolean_status_pagamento = 0;
+            h[indice].bolean_status_pagamento = 0;
             break;
         }
         printf("Insira uma resposta válida! Sim ou Não?\n");
@@ -92,73 +92,61 @@ int verifica_cpf(HOSPEDE *h){
     }
 }
 
-void Check_in(HOSPEDE *h, HOTEL *i){
+int Check_in(HOSPEDE *h, HOTEL *i, int indice){
     
     printf("--------------------CHECK-IN-----------------------\n");
     printf("Insira o nome do hospede:\n");
-    fgets(h->Nome, 70, stdin);
-
-    /* printf("Insira o CPF do hospede (ex: XXX.XXX.XXX-XX):\n");
-    while(1){
-    fgets(h->CPF, 14, stdin);
+    fgets(h[indice].Nome, 70, stdin);
+    printf("Insira o CPF do hospede (ex: XXX.XXX.XXX-XX):\n");
+    fgets(h[indice].CPF, 14, stdin);
     getchar();
-        if(verifica_cpf(&h) == -1) {
-            printf("Insira um CPF válido!\n");
-        }
-        else {
-            break;
-        }
-    } */ 
-        
     printf("Insira o RG do hospede:\n");
-    scanf("%d", &h->RG);
+    scanf("%d", &h[indice].RG);
     getchar();
     printf("Insira o telefone do hospede (ex: +XX (XX) 9XXXX-XXXX):\n");
-    fgets(h->telefone, 20, stdin);
+    fgets(h[indice].telefone, 20, stdin);
     printf("Insira a quantidade de adultos:\n");
-    scanf("%d", &h->quantidade_adultos);
+    scanf("%d", &h[indice].quantidade_adultos);
     getchar();
     printf("Insira a quantidade de criancas:\n");
-    scanf("%d", &h->quantidade_criancas);
+    scanf("%d", &h[indice].quantidade_criancas);
     getchar();
     printf("Insira a data de entrada (ex: XX/XX/XXXX):\n");
-    fgets(h->data_entrada, 11, stdin);
+    fgets(h[indice].data_entrada, 11, stdin);
     getchar();
     printf("Insira a hora de entrada (ex: XX:XX):\n");
-    fgets(h->hora_entrada, 6, stdin);
+    fgets(h[indice].hora_entrada, 6, stdin);
     getchar();
     printf("Insira o numero do quarto:\n");
-    quarto(h, i);
+    quarto(h, i, indice);
     printf("Pagamento realizado na entrada? \n");
-    pagamento(h, i);
+    pagamento(h, i, indice);
+    indice++;
+    return(indice);
 }
 
-void Busca_hospede(HOSPEDE *h, HOTEL q){
+void Busca_hospede(HOSPEDE *h){
 
-    char hospede[70];
+    char hospede_procurado[70];
     int i, count=0;
 
     printf("Digite o nome do hospede: ");
-    fgets(hospede, 70, stdin);
+    fgets(hospede_procurado, 70, stdin);
     
         for(i=0; i<MAX_QUARTOS; i++){
 
-            if(strcmp(hospede, q.quantidade[i].Nome) == 0){
+            if(strcmp(hospede_procurado, h[i].Nome) == 0){
 
+                printf("-------------------------------------------\n");
+                printf("Nome: %s\n", h[i].Nome);
+                //puts(h[i].Nome);
+                printf("CPF: %s\n", h[i].CPF);
+                //puts(h[i].CPF);
+                printf("RG: %d\n", h[i].RG);
+                printf("Quarto: %d\n", h[i].quarto);
+                printf("Telefone: %s\n", h[i].telefone);
+                //puts(h[i].telefone);
                 printf("-------------------------------------------");
-                printf("Nome: ");
-                puts(h->Nome);
-                printf("\n");
-                printf("CPF: ");
-                puts(h->CPF);
-                printf("\n");
-                printf("RG: %d\n", h->RG);
-                printf("Quarto: %d\n", h->quarto);
-                printf("Telefone: ");
-                puts(h->telefone);
-                printf("\n");
-                printf("-------------------------------------------");
-
                 count++;
 
             }
@@ -219,9 +207,9 @@ void Verificacao_quartos(HOTEL *x){
 
 int main(){
 
-    HOSPEDE hosp;
-    HOTEL hot, quant;
-    int comando;
+    HOSPEDE hospede[MAX_QUARTOS];
+    HOTEL hot;
+    int comando, indice=0;
 
     inicia_quartos(&hot);
     do{
@@ -230,12 +218,12 @@ int main(){
         getchar();
         switch(comando){
             case 1:
-                Check_in(&hosp, &hot);
+                indice = Check_in(hospede, &hot, indice);
                 break;
             case 2:
                 break;
             case 3:
-                Busca_hospede(&hosp, quant);
+                Busca_hospede(hospede);
                 break;
             case 4:
                 Verificacao_quartos(&hot);
