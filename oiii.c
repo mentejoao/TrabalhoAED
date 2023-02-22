@@ -16,7 +16,7 @@ typedef struct{
     char hora_saida[6]; // hh:mm
     char telefone[20]; // +55 (dd) 9xxxx-xxxx
     float valor;
-    int bolean_status_pagamento; // == 0 (nõo pago);
+    int bolean_status_pagamento; // == 0 (não pago);
     int quantidade_adultos;
     int quantidade_criancas;
 } HOSPEDE;
@@ -40,12 +40,11 @@ typedef struct{
 */
 
 void inicia_quartos(HOTEL *q){
-    for(int i = 0; i < MAX_QUARTOS/2; i++){
+
+    for(int i = 0; i<MAX_QUARTOS; i++){
         q->quartos[i]=0;
     }
-    for(int i = MAX_QUARTOS/2; i < MAX_QUARTOS; i++){
-        q->quartos[i]=1;
-    }
+
 }
 
 void quarto(HOSPEDE *x, HOTEL *y){
@@ -134,6 +133,44 @@ void Check_in(HOSPEDE *h, HOTEL *i){
     pagamento(h, i);
 }
 
+void Busca_hospede(HOSPEDE *h, HOTEL q){
+
+    char hospede[70];
+    int i, count=0;
+
+    printf("Digite o nome do hospede: ");
+    fgets(hospede, 70, stdin);
+    
+        for(i=0; i<MAX_QUARTOS; i++){
+
+            if(strcmp(hospede, q.quantidade[i].Nome) == 0){
+
+                printf("-------------------------------------------");
+                printf("Nome: ");
+                puts(h->Nome);
+                printf("\n");
+                printf("CPF: ");
+                puts(h->CPF);
+                printf("\n");
+                printf("RG: %d\n", h->RG);
+                printf("Quarto: %d\n", h->quarto);
+                printf("Telefone: ");
+                puts(h->telefone);
+                printf("\n");
+                printf("-------------------------------------------");
+
+                count++;
+
+            }
+
+        }
+
+    if(count == 0){
+        printf("Nome do hospede invalido.\nTente novamente.\n");
+    }
+    
+}
+
 void Menu(){
 
     printf("----------------------------------------------\n");
@@ -183,7 +220,7 @@ void Verificacao_quartos(HOTEL *x){
 int main(){
 
     HOSPEDE hosp;
-    HOTEL hot;
+    HOTEL hot, quant;
     int comando;
 
     inicia_quartos(&hot);
@@ -198,6 +235,7 @@ int main(){
             case 2:
                 break;
             case 3:
+                Busca_hospede(&hosp, quant);
                 break;
             case 4:
                 Verificacao_quartos(&hot);
