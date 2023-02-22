@@ -139,8 +139,8 @@ void Checkout(HOSPEDE *h){
                 printf("Quarto: %d\n", h[l].quarto);
                 printf("Telefone: %s\n", h[l].telefone);
                 printf("------------------DADOS-DA-ESTADIA----------------\n");
-                printf("Quantidadade de colchoes (extras): %.0lf\n", h[l].n_colchoes);
-                printf("Diarias: %.0lf\n", h[l].estadia);
+                printf("Quantidadade de colchoes (extras): %d\n", h[l].n_colchoes);
+                printf("Diarias: %.d\n", h[l].estadia);
                 printf("Tipo do quarto: ");
                 if(h[l].tipo_quarto == 1){
                     printf("Quarto com uma cama de solteiro\n");
@@ -195,7 +195,7 @@ int Check_in(HOSPEDE *h, HOTEL *i, int indice){
         fgets(h[indice].hora_entrada, 6, stdin);
         getchar();
         printf("Insira o tempo de estadia (diarias):\n");
-        scanf("%lf", &h[indice].estadia);
+        scanf("%d", &h[indice].estadia);
         Tabela_quarto2();
         printf("Insira o tipo do quarto:\n");
         tipo_do_quarto(h, indice);
