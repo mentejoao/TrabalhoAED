@@ -83,7 +83,7 @@ void pagamento(HOSPEDE *h, HOTEL *y, int indice){
 void Tabela_quarto2(){
 
     printf("\n");
-    printf("TIPOS DE QUARTOS\n");
+    printf("--------TIPOS-DE-QUARTOS--------\n");
     printf("1 - Quarto com uma cama de solteiro = 70,00\n");
     printf("2 - Quarto com duas camas de solteiro = 95,00\n");
     printf("3 - Quarto com uma cama de casal = 125,00\n");
@@ -122,7 +122,7 @@ void tipo_do_quarto(HOSPEDE *h, int indice){
 
 void Checkout(HOSPEDE *h){
     printf("--------------------CHECK-OUT-----------------------\n");
-    printf("Insira o nome do hospede:\n");
+    printf("Insira o nome do hospede: ");
     
     char hospede_procurado_checkout[70];
     int l, count=0;
@@ -204,6 +204,7 @@ int Check_in(HOSPEDE *h, HOTEL *i, int indice){
         printf("Pagamento realizado na entrada? \n");
         pagamento(h, i, indice);
         indice++;
+        printf("--------------------------------------------------\n");
         
     }
 
@@ -243,8 +244,8 @@ void Busca_hospede(HOSPEDE *h){
 
 void Menu(){
 
-    printf("----------------------------------------------\n");
-    printf("MENU DE FUNCIONALIDADES DO HOTEL\n");
+    printf("----------------------MENU-DE-FUNCIONALIDADES-DO-HOTEL------------------------\n");
+    //printf("MENU DE FUNCIONALIDADES DO HOTEL\n");
     printf("1. Check-in do hospede\n");
     printf("2. Checkout do hospede\n");
     printf("3. Buscar hospede\n");
@@ -253,21 +254,21 @@ void Menu(){
     printf("6. Calcular arrecadacao mensal\n");
     printf("7. Calcular arrecadacao anual\n");
     printf("8. Fim\n");
-    printf("----------------------------------------------\n");
+    printf("------------------------------------------------------------------------------\n");
     printf("Digite a opcao escolhida:\n");
 
 }
 
 void Tabela_quarto(){
 
-    printf("----------------------------------------------\n");
-    printf("VALORES DOS QUARTOS\n");
+    printf("-----------------------VALORES-DOS-QUARTOS-----------------------\n");
+    //printf("VALORES DOS QUARTOS\n");
     printf("Quarto com uma cama de solteiro = 70,00\n");
     printf("Quarto com duas camas de solteiro = 95,00\n");
     printf("Quarto com uma cama de casal = 125,00\n");
     printf("Quarto com uma cama de casal e uma de solteiro = 145,00\n");
     printf("Colchao avulso = 30,00\n");
-    printf("----------------------------------------------\n");
+    printf("-----------------------------------------------------------------\n");
 
 }
 
