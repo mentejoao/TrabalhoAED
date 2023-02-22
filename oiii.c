@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
-#define MAX_QUARTOS 20
+#define MAX_QUARTOS 21
+#define CASO_LIMITE 600
 
 /* Alunos: Leonardo Moreira de Araújo; 
            João Gabriel Cavalcante França*/
@@ -27,6 +28,8 @@ typedef struct{
 typedef struct{
     int quartos[MAX_QUARTOS];
     char status_pagamento[4];
+    int arrecadacao;
+    int valores[CASO_LIMITE];
 } HOTEL;
 
 /* TAD - HOTEL
@@ -35,17 +38,28 @@ typedef struct{
 3. Buscar hóspede;
 4. Verificar os quartos disponíveis;
 5. Tabela de valores dos quartos;
-6. Calcular arrecadação mensal;
-7. Calcular arrecadação anual;
-8. Recibo;
+6. Calcular arrecadação total;
 */
+
+void arrecada_total(HOTEL *p, int indice2){
+    int q = 0;
+    for(int w = 0; w < indice2; w++){
+        q += p->valores[w];
+    }
+    p->arrecadacao = q;
+    printf("Arrecadacao Total: R$ %d,00\n", p->arrecadacao);
+}
 
 void inicia_quartos(HOTEL *q){
 
     for(int i = 0; i<MAX_QUARTOS; i++){
         q->quartos[i]=0;
     }
-
+    
+    for(int i = 0; i<CASO_LIMITE; i++){
+        q->valores[i]=0;
+    }
+    q->arrecadacao = 0;
 }
 
 void quarto(HOSPEDE *h, HOTEL *y, int indice){
@@ -120,18 +134,17 @@ void tipo_do_quarto(HOSPEDE *h, int indice){
     
 }
 
-void Checkout(HOSPEDE *h){
+int Checkout(HOSPEDE *h, HOTEL *y, int indice){
     printf("--------------------CHECK-OUT-----------------------\n");
-    printf("Insira o nome do hospede: ");
+    printf("Insira o nome do hospede:\n");
     
+    char checkout_value;
     char hospede_procurado_checkout[70];
     int l, count=0;
 
     fgets(hospede_procurado_checkout, 70, stdin);
         for(l=0; l<MAX_QUARTOS; l++){
             if(strcmp(hospede_procurado_checkout, h[l].Nome) == 0){
-                printf("---------------------------------------------------\n");
-                printf("Hospede encontrado com sucesso!\n");
                 printf("---------------DADOS-GERAIS------------------------\n");
                 printf("Nome: %s", h[l].Nome);
                 printf("CPF: %s\n", h[l].CPF);
@@ -139,8 +152,6 @@ void Checkout(HOSPEDE *h){
                 printf("Quarto: %d\n", h[l].quarto);
                 printf("Telefone: %s\n", h[l].telefone);
                 printf("------------------DADOS-DA-ESTADIA----------------\n");
-                printf("Quantidadade de colchoes (extras): %d\n", h[l].n_colchoes);
-                printf("Diarias: %.d\n", h[l].estadia);
                 printf("Tipo do quarto: ");
                 if(h[l].tipo_quarto == 1){
                     printf("Quarto com uma cama de solteiro\n");
@@ -151,16 +162,53 @@ void Checkout(HOSPEDE *h){
                 if(h[l].tipo_quarto == 3){
                     printf("Quarto com uma cama de casal\n");
                 }   
-                else{
+                if(h[l].tipo_quarto == 4){
                     printf("Quarto com uma cama de casal e uma de solteiro\n");
                 }
+                printf("Quantidadade de colchoes (extras): %d\n", h[l].n_colchoes);
+                printf("Diarias: %.d\n", h[l].estadia);
                 count++;
+                printf("------------------VALOR----------------\n");
+                printf("Valor total: R$ %d,00\n", h[l].valor);
+                 printf("--------------------------------------\n");
+                printf("Confirmar checkout?\n");
+                scanf("%c", &checkout_value);
+
+                    if(checkout_value == 'S' || checkout_value == 's'){
+                        y->valores[indice] = h[l].valor;
+                        memset(h[l].Nome, '0', 70);
+                        memset(h[l].CPF, '0', 15);
+                        h[l].RG = 0;
+                        y->quartos[(h[l].quarto)-1] = 0;
+                        memset(h[l].data_entrada, '0', 11);
+                        memset(h[l].data_saida, '0', 11);
+                        memset(h[l].hora_entrada, '0', 6);
+                        memset(h[l].hora_saida, '0', 6);
+                        memset(h[l].telefone, '0', 20);
+                         h[l].valor = 0;
+                         h[l].bolean_status_pagamento = 0;
+                         h[l].quantidade_adultos = 0;
+                         h[l].quantidade_criancas = 0;
+                         h[l].estadia = 0;
+                         h[l].tipo_quarto = 0;
+                         h[l].n_colchoes = 0;
+                         h[l].quarto = 0;
+                         indice++;
+                    }
+
+                    else{
+                        break;
+                    }
             }
         }
+
     if(count == 0){
-        printf("Nome do hospede invalido.\nTente novamente.\n");
+            printf("---------------------------------------------------\n");
+            printf("Nome do hospede invalido.\nTente novamente.\n");
+            printf("---------------------------------------------------\n");
     }
     
+    return(indice);
 }
 
 int Check_in(HOSPEDE *h, HOTEL *i, int indice){
@@ -222,14 +270,15 @@ void Busca_hospede(HOSPEDE *h){
         for(i=0; i<MAX_QUARTOS; i++){
 
             if(strcmp(hospede_procurado, h[i].Nome) == 0){
-
+                printf("-------------------------------------------\n");
+                printf("Hospede encontrado com sucesso!\n");
                 printf("-------------------------------------------\n");
                 printf("Nome: %s", h[i].Nome);
                 printf("CPF: %s\n", h[i].CPF);
                 printf("RG: %d\n", h[i].RG);
                 printf("Quarto: %d\n", h[i].quarto);
                 printf("Telefone: %s\n", h[i].telefone);
-                printf("-------------------------------------------");
+                printf("-------------------------------------------\n");
                 count++;
 
             }
@@ -237,7 +286,9 @@ void Busca_hospede(HOSPEDE *h){
         }
 
     if(count == 0){
+        printf("---------------------------------------------------\n");
         printf("Nome do hospede invalido.\nTente novamente.\n");
+        printf("---------------------------------------------------\n");
     }
     
 }
@@ -245,15 +296,13 @@ void Busca_hospede(HOSPEDE *h){
 void Menu(){
 
     printf("----------------------MENU-DE-FUNCIONALIDADES-DO-HOTEL------------------------\n");
-    //printf("MENU DE FUNCIONALIDADES DO HOTEL\n");
     printf("1. Check-in do hospede\n");
     printf("2. Checkout do hospede\n");
     printf("3. Buscar hospede\n");
     printf("4. Verificar os quartos disponiveis\n");
     printf("5. Tabela de valores dos quartos\n");
-    printf("6. Calcular arrecadacao mensal\n");
-    printf("7. Calcular arrecadacao anual\n");
-    printf("8. Fim\n");
+    printf("6. Calcular arrecadacao total\n");
+    printf("7. Fim\n");
     printf("------------------------------------------------------------------------------\n");
     printf("Digite a opcao escolhida:\n");
 
@@ -262,7 +311,6 @@ void Menu(){
 void Tabela_quarto(){
 
     printf("-----------------------VALORES-DOS-QUARTOS-----------------------\n");
-    //printf("VALORES DOS QUARTOS\n");
     printf("Quarto com uma cama de solteiro = 70,00\n");
     printf("Quarto com duas camas de solteiro = 95,00\n");
     printf("Quarto com uma cama de casal = 125,00\n");
@@ -291,7 +339,7 @@ int main(){
 
     HOSPEDE hospede[MAX_QUARTOS];
     HOTEL hot;
-    int comando, indice=0;
+    int comando, indice=0, indice2=0;
 
     inicia_quartos(&hot);
     do{
@@ -303,7 +351,7 @@ int main(){
                 indice = Check_in(hospede, &hot, indice);
                 break;
             case 2:
-                Checkout(hospede);
+                indice2 = Checkout(hospede, &hot, indice2);
                 break;
             case 3:
                 Busca_hospede(hospede);
@@ -315,10 +363,9 @@ int main(){
                 Tabela_quarto();
                 break; 
             case 6:
+                arrecada_total(&hot, indice2);
                 break;
             case 7:
-                break;
-            case 8:
                 printf("Obrigado por utilizar nosso sistema! Tchau tchau!\n");
                 break;
             default:
@@ -326,7 +373,7 @@ int main(){
                 break;
         }
 
-    }while(comando!=8);
+    }while(comando!=7);
 
 
 return 0;
